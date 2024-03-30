@@ -1,0 +1,403 @@
+[01/09 15:00:48] detectron2 INFO: Rank of current process: 1. World size: 4
+[01/09 15:00:53] detectron2 INFO: Environment info:
+-------------------------------  --------------------------------------------------------------------------------------------------
+sys.platform                     linux
+Python                           3.10.11 (main, May 16 2023, 00:28:57) [GCC 11.2.0]
+numpy                            1.26.2
+detectron2                       0.6 @/homes/55/anjun/.local/lib/python3.10/site-packages/detectron2
+Compiler                         GCC 8.3
+CUDA compiler                    CUDA 12.1
+detectron2 arch flags            8.6
+DETECTRON2_ENV_MODULE            <not set>
+PyTorch                          2.1.1+cu121 @/scratch/local/ssd/anjun/anaconda3/envs/ldm/lib/python3.10/site-packages/torch
+PyTorch debug build              False
+torch._C._GLIBCXX_USE_CXX11_ABI  False
+GPU available                    Yes
+GPU 0,1,2,3                      NVIDIA A40 (arch=8.6)
+Driver version                   530.30.02
+CUDA_HOME                        /usr/local/cuda-12.1/
+Pillow                           9.5.0
+torchvision                      0.16.1+cu121 @/scratch/local/ssd/anjun/anaconda3/envs/ldm/lib/python3.10/site-packages/torchvision
+torchvision arch flags           5.0, 6.0, 7.0, 7.5, 8.0, 8.6, 9.0
+fvcore                           0.1.5.post20221221
+iopath                           0.1.9
+cv2                              4.5.4-dev
+-------------------------------  --------------------------------------------------------------------------------------------------
+PyTorch built with:
+  - GCC 9.3
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2022.2-Product Build 20220804 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v3.1.1 (Git Hash 64f6bcbcbab628e96f33a62c3e975f8535a7bde4)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 12.1
+  - NVCC architecture flags: -gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70;-gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90
+  - CuDNN 8.9.2
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=12.1, CUDNN_VERSION=8.9.2, CXX_COMPILER=/opt/rh/devtoolset-9/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=0 -fabi-version=11 -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-unused-parameter -Wno-unused-function -Wno-unused-result -Wno-strict-overflow -Wno-strict-aliasing -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=old-style-cast -Wno-invalid-partial-specialization -Wno-unused-private-field -Wno-aligned-allocation-unavailable -Wno-missing-braces -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Werror=cast-function-type -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_DISABLE_GPU_ASSERTS=ON, TORCH_VERSION=2.1.1, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, 
+
+[01/09 15:00:53] detectron2 INFO: Command line arguments: Namespace(config_file='configs/coco-stuff-164k-156/zero_shot_proposal_classification_learn_prompt_bs32_10k.yaml', resume=False, eval_only=False, num_gpus=4, num_machines=1, machine_rank=0, dist_url='tcp://127.0.0.1:52590', opts=['MODEL.SEM_SEG_HEAD.NUM_CLASSES', '171', 'MODEL.MASK_FORMER.LOSS_NUM_CLASS', '171', 'DATASETS.TRAIN', "('coco_2017_train_stuff_all_sem_seg',)", 'DATASETS.TEST', "('context_59_test_sem_seg',)"])
+[01/09 15:00:53] detectron2 INFO: Contents of args.config_file=configs/coco-stuff-164k-156/zero_shot_proposal_classification_learn_prompt_bs32_10k.yaml:
+[38;5;197m_BASE_[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m../coco-stuff-164k-171/maskformer_R50_bs32_60k.yaml[39m
+[38;5;197mORACLE[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141mTrue[39m
+[38;5;197mMODEL[39m[38;5;15m:[39m
+[38;5;15m  [39m[38;5;197mWEIGHTS[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186m"[39m
+[38;5;15m  [39m[38;5;197mMETA_ARCHITECTURE[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mProposalClipClassifier[39m[38;5;186m"[39m
+[38;5;15m  [39m[38;5;197mMASK_ON[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141mTrue[39m
+[38;5;15m  [39m[38;5;197mCLIP_ADAPTER[39m[38;5;15m:[39m
+[38;5;15m    [39m[38;5;197mPROMPT_LEARNER[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mlearnable[39m[38;5;186m"[39m
+[38;5;15m    [39m[38;5;242m# for learnable prompt[39m
+[38;5;15m    [39m[38;5;197mPROMPT_DIM[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m512[39m
+[38;5;15m    [39m[38;5;197mPROMPT_SHAPE[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m(16,[39m[38;5;141m [39m[38;5;141m0)[39m
+[38;5;15m    [39m[38;5;197mCLIP_MODEL_NAME[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mViT-B/16[39m[38;5;186m"[39m
+[38;5;15m    [39m
+[38;5;15m    [39m[38;5;197mLAYERMASKVIT[39m[38;5;15m:[39m[38;5;15m [39m[38;5;15m[[39m[38;5;15m][39m
+[38;5;197mDATASETS[39m[38;5;15m:[39m
+[38;5;15m  [39m[38;5;197mTRAIN[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m("coco_2017_train_stuff_base_sem_seg_classification",)[39m
+[38;5;15m  [39m[38;5;197mTEST[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m("coco_2017_test_stuff_sem_seg_classification",)[39m
+[38;5;15m  [39m[38;5;197mSAMPLE_PER_CLASS[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m32[39m
+[38;5;197mINPUT[39m[38;5;15m:[39m
+[38;5;15m  [39m[38;5;197mMIN_SIZE_TRAIN[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m(224,224)[39m
+[38;5;15m  [39m[38;5;197mMIN_SIZE_TEST[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m224[39m
+[38;5;15m  [39m[38;5;197mMAX_SIZE_TEST[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m2560[39m
+[38;5;15m  [39m[38;5;197mSIZE_DIVISIBILITY[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m-1[39m
+[38;5;15m  [39m[38;5;197mFORMAT[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mRGB[39m[38;5;186m"[39m
+[38;5;15m  [39m[38;5;197mDATASET_MAPPER_NAME[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mmask_former_binary_semantic[39m[38;5;186m"[39m
+[38;5;197mSOLVER[39m[38;5;15m:[39m
+[38;5;15m  [39m[38;5;197mIMS_PER_BATCH[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m32[39m
+[38;5;15m  [39m[38;5;197mTEST_IMS_PER_BATCH[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m8[39m
+[38;5;15m  [39m[38;5;197mOPTIMIZER[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mSGD[39m[38;5;186m"[39m
+[38;5;15m  [39m[38;5;197mBASE_LR[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m0.02[39m
+[38;5;15m  [39m[38;5;197mWEIGHT_DECAY[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m0.0005[39m
+[38;5;15m  [39m[38;5;197mLR_SCHEDULER_NAME[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mWarmupCosineLR[39m[38;5;186m"[39m
+[38;5;15m  [39m[38;5;197mWARMUP_METHOD[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mconstant[39m[38;5;186m"[39m[38;5;15m  [39m
+[38;5;15m  [39m[38;5;197mWARMUP_FACTOR[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m0.005[39m
+[38;5;15m  [39m[38;5;197mWARMUP_ITERS[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m100[39m
+[38;5;15m  [39m[38;5;242m# IMS_PER_BATCH: 1[39m
+[38;5;15m  [39m[38;5;242m# TEST_IMS_PER_BATCH: 1[39m
+[38;5;15m  [39m[38;5;197mMAX_ITER[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m16000[39m
+[38;5;15m  [39m[38;5;197mCHECKPOINT_PERIOD[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m1000[39m
+[38;5;197mTEST[39m[38;5;15m:[39m
+[38;5;15m  [39m[38;5;197mEVAL_PERIOD[39m[38;5;15m:[39m[38;5;15m [39m[38;5;141m3000[39m
+[38;5;197mOUTPUT_DIR[39m[38;5;15m:[39m[38;5;15m [39m[38;5;186m"[39m[38;5;186mprompt/promptproposal/learnprompt_bs32_10k_4[39m[38;5;186m"[39m
+
+[01/09 15:00:54] detectron2.utils.env INFO: Using a generated random seed 54070974
+[01/09 15:00:56] mask_former.proposal_classification INFO: ['clip_adapter.prompt_learner.prefix_prompt']
+[01/09 15:00:56] detectron2.engine.defaults INFO: Model:
+ProposalClipClassifier(
+  (clip_adapter): ClipAdapter(
+    (clip_model): CLIP(
+      (visual): VisionTransformer(
+        (conv1): Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16), bias=False)
+        (ln_pre): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+        (transformer): TransformerVit(
+          (resblocks): Sequential(
+            (0): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (1): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (2): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (3): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (4): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (5): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (6): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (7): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (8): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (9): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (10): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+            (11): ResidualAttentionBlockVit(
+              (attn): MultiheadAttention(
+                (out_proj): NonDynamicallyQuantizableLinear(in_features=768, out_features=768, bias=True)
+              )
+              (ln_1): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+              (mlp): Sequential(
+                (c_fc): Linear(in_features=768, out_features=3072, bias=True)
+                (gelu): QuickGELU()
+                (c_proj): Linear(in_features=3072, out_features=768, bias=True)
+              )
+              (ln_2): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+            )
+          )
+        )
+        (ln_post): LayerNorm((768,), eps=1e-05, elementwise_affine=True)
+      )
+      (transformer): Transformer(
+        (resblocks): Sequential(
+          (0): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (1): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (2): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (3): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (4): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (5): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (6): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (7): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (8): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (9): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (10): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+          (11): ResidualAttentionBlock(
+            (attn): MultiheadAttention(
+              (out_proj): NonDynamicallyQuantizableLinear(in_features=512, out_features=512, bias=True)
+            )
+            (ln_1): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+            (mlp): Sequential(
+              (c_fc): Linear(in_features=512, out_features=2048, bias=True)
+              (gelu): QuickGELU()
+              (c_proj): Linear(in_features=2048, out_features=512, bias=True)
+            )
+            (ln_2): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+          )
+        )
+      )
+      (token_embedding): Embedding(49408, 512)
+      (ln_final): LayerNorm((512,), eps=1e-05, elementwise_affine=True)
+    )
+    (prompt_learner): LearnablePromptExtractor(
+      prefix_prompt:16,suffix_prompt:0,dimension:512
+      [Normal_Init(mu=0,std=0.02)]
+    )
+  )
+)
+[01/09 15:00:56] mask_former.data.dataset_mappers.mask_former_binary_semantic_dataset_mapper INFO: [MaskFormerBinarySemanticDatasetMapper] Augmentations used in training: [CropImageWithMask(expand_ratio=(1.0, 1.0)), RandomResizedCrop(size=(224, 224)), RandomFlip()]
+[01/09 15:00:58] detectron2.data.datasets.coco INFO: Loaded 118287 images with semantic segmentation from /scratch/local/ssd/anjun/datasets/coco-stuff/images/train2017

@@ -1,0 +1,269 @@
+from typing import List, Union
+
+import numpy as np
+
+try:
+    # ignore ShapelyDeprecationWarning from fvcore
+    import warnings
+
+    from shapely.errors import ShapelyDeprecationWarning
+
+    warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
+except:
+    pass
+import os
+
+import huggingface_hub
+import torch
+from detectron2.checkpoint import DetectionCheckpointer
+from detectron2.config import get_cfg
+from detectron2.data import MetadataCatalog
+from detectron2.engine import DefaultTrainer
+from detectron2.projects.deeplab import add_deeplab_config
+from detectron2.utils.visualizer import Visualizer, random_color
+from huggingface_hub import hf_hub_download
+from PIL import Image
+import torchvision
+
+from mask_former import add_mask_former_config
+from mask_former.data.datasets.register_coco_stuff import COCO_CATEGORIES
+from mask_former.data.datasets.register_pascal_context import PC59_SEM_SEG_CATEGORIES, PC459_SEM_SEG_CATEGORIES
+
+def setup(config_file: str, device=None):
+    """
+    Create configs and perform basic setups.
+    """
+    cfg = get_cfg()
+    # for poly lr schedule
+    add_deeplab_config(cfg)
+    add_mask_former_config(cfg)
+    cfg.merge_from_file(config_file)
+    cfg.MODEL.DEVICE = device or "cuda" if torch.cuda.is_available() else "cpu"
+    cfg.freeze()
+    return cfg
+
+
+class Predictor(object):
+    def __init__(self, config_file: str, model_path: str):
+        """
+        Args:
+            config_file (str): the config file path
+            model_path (str): the model path
+        """
+        cfg = setup(config_file)
+        self.model = DefaultTrainer.build_model(cfg)
+        print("Loading model from: ", model_path)
+        DetectionCheckpointer(self.model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
+            model_path
+        )
+        print("Loaded model from: ", model_path)
+        self.model.eval()
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+            self.model = self.model.cuda()
+
+    def predict(
+        self,
+        image_data_or_path: Union[Image.Image, str],
+        vocabulary: List[str] = [],
+        augment_vocabulary: Union[str,bool] = False,
+        output_file: str = None,
+    ) -> Union[dict, None]:
+        """
+        Predict the segmentation result.
+        Args:
+            image_data_or_path (Union[Image.Image, str]): the input image or the image path
+            vocabulary (List[str]): the vocabulary used for the segmentation
+            augment_vocabulary (bool): whether to augment the vocabulary
+            output_file (str): the output file path
+        Returns:
+            Union[dict, None]: the segmentation result
+        """
+        if isinstance(image_data_or_path, str):
+            if image_data_or_path[-3:] == '.pt':
+                image_tensor = torch.load(image_data_or_path).squeeze()
+                h, w = image_tensor.shape[-2:]
+                print(image_tensor.shape, torch.max(image_tensor), torch.min(image_tensor))
+                image_data = torchvision.transforms.functional.to_pil_image(image_tensor/255.)
+            else:
+                image_data = Image.open(image_data_or_path)
+                w, h = image_data.size
+                image_tensor: torch.Tensor = self._preprocess(image_data)
+        else:
+            image_data = image_data_or_path
+            w, h = image_data.size
+            image_tensor: torch.Tensor = self._preprocess(image_data)
+        print(image_tensor.shape, torch.max(image_tensor), torch.min(image_tensor))
+        
+        if False:
+            vocabulary = list(set([v.lower().strip() for v in vocabulary]))
+            # remove invalid vocabulary
+            vocabulary = [v for v in vocabulary if v != ""]
+            ori_vocabulary = vocabulary
+        else:
+            ori_vocabulary = PC59_SEM_SEG_CATEGORIES
+            vocabulary = PC59_SEM_SEG_CATEGORIES
+
+        print("vocabulary:", vocabulary)
+        # if isinstance(augment_vocabulary,str):
+        #     vocabulary = self.augment_vocabulary(vocabulary, augment_vocabulary)
+        # else:
+        #     vocabulary = self._merge_vocabulary(vocabulary)
+        # if len(ori_vocabulary) == 0:
+        #     ori_vocabulary = vocabulary
+        # print("vocabulary:", vocabulary)
+        with torch.no_grad():
+            result = self.model(
+                [
+                    {
+                        "image": image_tensor,
+                        "height": h,
+                        "width": w,
+                        "vocabulary": vocabulary,
+                        "meta": {"dataset_name": "context_59_test_sem_seg",}
+                    }
+                ]
+            )[0]["sem_seg"]
+        seg_map = self._postprocess(result, ori_vocabulary)
+        if output_file:
+            self.visualize(image_data, seg_map, ori_vocabulary, output_file)
+            return
+        return {
+            "image": image_data,
+            "sem_seg": seg_map,
+            "vocabulary": ori_vocabulary,
+        }
+
+    def visualize(
+        self,
+        image: Image.Image,
+        sem_seg: np.ndarray,
+        vocabulary: List[str],
+        output_file: str = None,
+        mode: str = "overlay",
+    ) -> Union[Image.Image, None]:
+        """
+        Visualize the segmentation result.
+        Args:
+            image (Image.Image): the input image
+            sem_seg (np.ndarray): the segmentation result
+            vocabulary (List[str]): the vocabulary used for the segmentation
+            output_file (str): the output file path
+            mode (str): the visualization mode, can be "overlay" or "mask"
+        Returns:
+            Image.Image: the visualization result. If output_file is not None, return None.
+        """
+        # add temporary metadata
+        # set numpy seed to make sure the colors are the same
+        np.random.seed(0)
+        image.save(output_file+'_input.png')
+        colors = [random_color(rgb=True, maximum=255) for _ in range(len(vocabulary))]
+        MetadataCatalog.get("_temp").set(stuff_classes=vocabulary, stuff_colors=colors)
+        metadata = MetadataCatalog.get("_temp")
+        if mode == "overlay":
+            v = Visualizer(image, metadata)
+            v = v.draw_sem_seg(sem_seg, area_threshold=0).get_image()
+            v = Image.fromarray(v)
+        else:
+            v = np.zeros((image.size[1], image.size[0], 3), dtype=np.uint8)
+            labels, areas = np.unique(sem_seg, return_counts=True)
+            sorted_idxs = np.argsort(-areas).tolist()
+            labels = labels[sorted_idxs]
+            for label in filter(lambda l: l < len(metadata.stuff_classes), labels):
+                v[sem_seg == label] = metadata.stuff_colors[label]
+            v = Image.fromarray(v)
+        # remove temporary metadata
+        MetadataCatalog.remove("_temp")
+        if output_file is None:
+            return v
+        v.save(output_file+'_output.png')
+        print(f"saved to {output_file}_output.png")
+
+    def _merge_vocabulary(self, vocabulary: List[str]) -> List[str]:
+        default_voc = [c["name"] for c in COCO_CATEGORIES]
+        return vocabulary + [c for c in default_voc if c not in vocabulary]
+
+    def augment_vocabulary(
+        self, vocabulary: List[str], aug_set: str = "COCO-all"
+    ) -> List[str]:
+        default_voc = [c["name"] for c in COCO_CATEGORIES]
+        stuff_voc = [
+            c["name"]
+            for c in COCO_CATEGORIES
+            if "isthing" not in c or c["isthing"] == 0
+        ]
+        if aug_set == "COCO-all":
+            return vocabulary + [c for c in default_voc if c not in vocabulary]
+        elif aug_set == "COCO-stuff":
+            return vocabulary + [c for c in stuff_voc if c not in vocabulary]
+        else:
+            return vocabulary
+
+    def _preprocess(self, image: Image.Image) -> torch.Tensor:
+        """
+        Preprocess the input image.
+        Args:
+            image (Image.Image): the input image
+        Returns:
+            torch.Tensor: the preprocessed image
+        """
+        image = image.convert("RGB")
+        # resize short side to 640
+        w, h = image.size
+        if w < h:
+            image = image.resize((640, int(h * 640 / w)))
+        else:
+            image = image.resize((int(w * 640 / h), 640))
+        image = torch.from_numpy(np.asarray(image)).float()
+        image = image.permute(2, 0, 1)
+        return image
+
+    def _postprocess(
+        self, result: torch.Tensor, ori_vocabulary: List[str]
+    ) -> np.ndarray:
+        """
+        Postprocess the segmentation result.
+        Args:
+            result (torch.Tensor): the segmentation result
+            ori_vocabulary (List[str]): the original vocabulary used for the segmentation
+        Returns:
+            np.ndarray: the postprocessed segmentation result
+        """
+        result = result.argmax(dim=0).cpu().numpy()  # (H, W)
+        if len(ori_vocabulary) == 0:
+            return result
+        result[result >= len(ori_vocabulary)] = len(ori_vocabulary)
+        return result
+
+if __name__ == "__main__":
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--config-file", type=str, required=True, help="path to config file"
+    )
+    parser.add_argument(
+        "--model-path", type=str, required=True, help="path to model file"
+    )
+    parser.add_argument(
+        "--img-path", type=str, required=True, help="path to image file."
+    )
+    parser.add_argument("--aug-vocab", action="store_true", help="augment vocabulary.")
+    parser.add_argument(
+        "--vocab",
+        type=str,
+        default="",
+        required=False,
+        help="list of category name. seperated with ,.",
+    )
+    parser.add_argument(
+        "--output-file", type=str, default=None, help="path to output file."
+    )
+    args = parser.parse_args()
+    predictor = Predictor(config_file=args.config_file, model_path=args.model_path)
+    predictor.predict(
+        args.img_path,
+        args.vocab.split(","),
+        args.aug_vocab,
+        output_file=args.output_file,
+    )
